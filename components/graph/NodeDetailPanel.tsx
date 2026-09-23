@@ -1,9 +1,12 @@
 import type { CSSProperties } from "react";
 import type { GraphNode } from "@/lib/graph/types";
+import type { PersonRelevanceScore } from "@/lib/scoring/types";
+import { getStrongestConnectionLabel } from "@/lib/scoring/scorePersonForJob";
 import { sampleCareerGraph } from "@/lib/fixtures/sampleCareerGraph";
 
 interface NodeDetailPanelProps {
   node: GraphNode | null;
+  score: PersonRelevanceScore | null;
   onClose: () => void;
 }
 
@@ -11,11 +14,10 @@ const TYPE_LABEL: Record<GraphNode["type"], string> = {
   job: "Target job",
   company: "Company",
   role: "Role",
-  skill: "Skill",
   person: "Person",
 };
 
-export default function NodeDetailPanel({ node, onClose }: NodeDetailPanelProps) {
+export default function NodeDetailPanel({ node, score, onClose }: NodeDetailPanelProps) {
   if (!node) {
     return (
       <div style={panelStyle}>
@@ -33,43 +35,70 @@ export default function NodeDetailPanel({ node, onClose }: NodeDetailPanelProps)
         ×
       </button>
       <span style={badgeStyle}>{TYPE_LABEL[node.type]}</span>
-      {node.type === "person" ? <PersonDetails node={node} /> : <GenericDetails node={node} />}
+      {node.type === "person" ? (
+        <PersonDetails node={node} score={score} />
+      ) : (
+        <GenericDetails node={node} />
+      )}
     </div>
   );
 }
 
-function PersonDetails({ node }: { node: Extract<GraphNode, { type: "person" }> }) {
+function PersonDetails({
+  node,
+  score,
+}: {
+  node: Extract<GraphNode, { type: "person" }>;
+  score: PersonRelevanceScore | null;
+}) {
   const role = sampleCareerGraph.roles.find((r) => r.id === node.currentRole);
-  const company =
-    sampleCareerGraph.company.id === node.companyId
-      ? sampleCareerGraph.company
-      : sampleCareerGraph.otherCompanies.find((c) => c.id === node.companyId);
-  const skills = sampleCareerGraph.skills.filter((s) => node.skills.includes(s.id));
 
   return (
     <div>
       <h3 style={titleStyle}>{node.name}</h3>
       <p style={subtitleStyle}>{node.title}</p>
-      <p style={subtitleStyle}>{company?.name}</p>
+      <p style={subtitleStyle}>{node.companyName}</p>
 
-      <div style={{ marginTop: 12 }}>
-        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>
-          Outreach relevance
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={scoreBarTrackStyle}>
-            <div
-              style={{
-                ...scoreBarFillStyle,
-                width: `${Math.round(node.relevanceScore * 100)}%`,
-              }}
-            />
+      {score && (
+        <>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>
+              Outreach relevance
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={scoreBarTrackStyle}>
+                <div
+                  style={{
+                    ...scoreBarFillStyle,
+                    width: `${Math.round(score.totalScore * 100)}%`,
+                  }}
+                />
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>
+                {Math.round(score.totalScore * 100)}%
+              </span>
+            </div>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600 }}>
-            {Math.round(node.relevanceScore * 100)}%
-          </span>
-        </div>
-      </div>
+
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>
+              Strongest connection
+            </div>
+            <span style={pillStyle}>{getStrongestConnectionLabel(score)}</span>
+          </div>
+
+          {score.reasons.length > 0 && (
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>Why they rank here</div>
+              <ul style={{ margin: 0, paddingLeft: 16, fontSize: 13, color: "#334155", lineHeight: 1.6 }}>
+                {score.reasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
 
       {role && (
         <div style={{ marginTop: 12 }}>
@@ -79,15 +108,22 @@ function PersonDetails({ node }: { node: Extract<GraphNode, { type: "person" }> 
       )}
 
       <div style={{ marginTop: 12 }}>
-        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>Skills</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-          {skills.map((s) => (
-            <span key={s.id} style={pillStyle}>
-              {s.name}
-            </span>
-          ))}
-        </div>
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>Domain</div>
+        <span style={pillStyle}>{node.domain}</span>
       </div>
+
+      {node.skills.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>Skills</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {node.skills.map((skill) => (
+              <span key={skill} style={pillStyle}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

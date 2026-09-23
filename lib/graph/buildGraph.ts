@@ -20,9 +20,7 @@ export function buildGraph(fixture: CareerGraphFixture): Graph {
 
   addNode(fixture.job);
   addNode(fixture.company);
-  fixture.otherCompanies.forEach(addNode);
   fixture.roles.forEach(addNode);
-  fixture.skills.forEach(addNode);
   fixture.people.forEach(addNode);
 
   for (const edge of fixture.edges) {
@@ -30,10 +28,7 @@ export function buildGraph(fixture: CareerGraphFixture): Graph {
       continue;
     }
     if (!graph.hasEdge(edge.id)) {
-      graph.addEdgeWithKey(edge.id, edge.source, edge.target, {
-        kind: edge.kind,
-        weight: edge.weight,
-      });
+      graph.addEdgeWithKey(edge.id, edge.source, edge.target, { kind: edge.kind });
     }
   }
 

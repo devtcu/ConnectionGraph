@@ -1,4 +1,4 @@
-import type { CareerGraphFixture, GraphEdge } from "@/lib/graph/types";
+import type { CareerGraphFixture, GraphEdge, PersonNode } from "@/lib/graph/types";
 
 const job = {
   type: "job" as const,
@@ -10,6 +10,8 @@ const job = {
     "team at Nimbus Health. You'll build and scale the model-serving infrastructure " +
     "behind our clinical risk-scoring products, working closely with data science " +
     "and product. Strong Python, PyTorch, and distributed-systems experience required.",
+  requiredSkills: ["Python", "PyTorch", "Distributed Systems"],
+  domain: "ML Platform",
 };
 
 const company = {
@@ -18,141 +20,150 @@ const company = {
   name: "Nimbus Health",
 };
 
-const otherCompanies = [
-  { type: "company" as const, id: "company:other-1", name: "Orbital Data" },
-  { type: "company" as const, id: "company:other-2", name: "Fernway Labs" },
-  { type: "company" as const, id: "company:other-3", name: "Kestrel Systems" },
-];
-
 const roles = [
   { type: "role" as const, id: "role:ml-engineer", name: "ML Engineer" },
   { type: "role" as const, id: "role:ml-infra-engineer", name: "ML Infra Engineer" },
   { type: "role" as const, id: "role:data-scientist", name: "Data Scientist" },
   { type: "role" as const, id: "role:eng-manager-ml", name: "Engineering Manager, ML" },
+  { type: "role" as const, id: "role:recruiter", name: "Technical Recruiter" },
 ];
 
-const skills = [
-  { type: "skill" as const, id: "skill:python", name: "Python" },
-  { type: "skill" as const, id: "skill:pytorch", name: "PyTorch" },
-  { type: "skill" as const, id: "skill:distributed-systems", name: "Distributed Systems" },
-  { type: "skill" as const, id: "skill:kubernetes", name: "Kubernetes" },
-  { type: "skill" as const, id: "skill:mlops", name: "MLOps" },
-  { type: "skill" as const, id: "skill:deep-learning", name: "Deep Learning" },
-  { type: "skill" as const, id: "skill:sql", name: "SQL" },
-  { type: "skill" as const, id: "skill:data-pipelines", name: "Data Pipelines" },
-];
+const NIMBUS = company.id;
 
-const people = [
+const people: PersonNode[] = [
   {
-    type: "person" as const,
+    type: "person",
     id: "person:1",
     name: "Priya Nair",
     title: "Senior ML Engineer, ML Platform",
     currentRole: "role:ml-engineer",
-    companyId: "company:nimbus-health",
-    skills: ["skill:python", "skill:pytorch", "skill:distributed-systems", "skill:mlops"],
-    relevanceScore: 0.97,
+    companyId: NIMBUS,
+    companyName: "Nimbus Health",
+    domain: "ML Platform",
+    category: "ic",
+    skills: ["Python", "PyTorch", "Distributed Systems", "MLOps"],
   },
   {
-    type: "person" as const,
+    type: "person",
     id: "person:2",
     name: "Marcus Chen",
     title: "ML Infra Engineer",
     currentRole: "role:ml-infra-engineer",
-    companyId: "company:nimbus-health",
-    skills: ["skill:kubernetes", "skill:distributed-systems", "skill:mlops", "skill:python"],
-    relevanceScore: 0.91,
+    companyId: NIMBUS,
+    companyName: "Nimbus Health",
+    domain: "ML Platform",
+    category: "ic",
+    skills: ["Kubernetes", "Distributed Systems", "MLOps", "Python"],
   },
   {
-    type: "person" as const,
+    type: "person",
     id: "person:3",
     name: "Sofia Reyes",
     title: "Engineering Manager, ML Platform",
     currentRole: "role:eng-manager-ml",
-    companyId: "company:nimbus-health",
-    skills: ["skill:python", "skill:distributed-systems", "skill:mlops"],
-    relevanceScore: 0.88,
+    companyId: NIMBUS,
+    companyName: "Nimbus Health",
+    domain: "ML Platform",
+    category: "manager",
+    skills: ["Python", "Distributed Systems", "MLOps"],
   },
   {
-    type: "person" as const,
+    type: "person",
     id: "person:4",
+    name: "Rachel Kim",
+    title: "Technical Recruiter, ML Platform",
+    currentRole: "role:recruiter",
+    companyId: NIMBUS,
+    companyName: "Nimbus Health",
+    domain: "ML Platform",
+    category: "recruiter",
+    skills: [],
+  },
+  {
+    type: "person",
+    id: "person:5",
     name: "Daniel Kim",
     title: "Senior ML Engineer",
     currentRole: "role:ml-engineer",
-    companyId: "company:other-1",
-    skills: ["skill:python", "skill:pytorch", "skill:deep-learning"],
-    relevanceScore: 0.79,
+    companyId: null,
+    companyName: "Orbital Data",
+    domain: "Data Platform",
+    category: "ic",
+    skills: ["Python", "PyTorch", "Deep Learning"],
   },
   {
-    type: "person" as const,
-    id: "person:5",
+    type: "person",
+    id: "person:6",
     name: "Aisha Bello",
     title: "Data Scientist, Risk Modeling",
     currentRole: "role:data-scientist",
-    companyId: "company:nimbus-health",
-    skills: ["skill:python", "skill:sql", "skill:deep-learning"],
-    relevanceScore: 0.74,
+    companyId: NIMBUS,
+    companyName: "Nimbus Health",
+    domain: "Data Science",
+    category: "ic",
+    skills: ["Python", "SQL", "Deep Learning"],
   },
   {
-    type: "person" as const,
-    id: "person:6",
+    type: "person",
+    id: "person:7",
+    name: "Wei Zhang",
+    title: "ML Infra Engineer",
+    currentRole: "role:ml-infra-engineer",
+    companyId: null,
+    companyName: "Orbital Data",
+    domain: "Data Platform",
+    category: "ic",
+    skills: ["Kubernetes", "Distributed Systems"],
+  },
+  {
+    type: "person",
+    id: "person:8",
     name: "Tom Bergström",
     title: "ML Engineer",
     currentRole: "role:ml-engineer",
-    companyId: "company:other-2",
-    skills: ["skill:pytorch", "skill:deep-learning", "skill:data-pipelines"],
-    relevanceScore: 0.68,
+    companyId: null,
+    companyName: "Fernway Labs",
+    domain: "Product",
+    category: "ic",
+    skills: ["PyTorch", "Deep Learning", "Data Pipelines"],
   },
   {
-    type: "person" as const,
-    id: "person:7",
-    name: "Wei Zhang",
-    title: "Data Pipeline Engineer",
-    currentRole: "role:ml-infra-engineer",
-    companyId: "company:other-1",
-    skills: ["skill:data-pipelines", "skill:sql", "skill:kubernetes"],
-    relevanceScore: 0.61,
-  },
-  {
-    type: "person" as const,
-    id: "person:8",
+    type: "person",
+    id: "person:9",
     name: "Lena Fischer",
     title: "Data Scientist",
     currentRole: "role:data-scientist",
-    companyId: "company:other-2",
-    skills: ["skill:python", "skill:sql"],
-    relevanceScore: 0.52,
+    companyId: null,
+    companyName: "Fernway Labs",
+    domain: "Product Analytics",
+    category: "ic",
+    skills: ["Python", "SQL"],
   },
   {
-    type: "person" as const,
-    id: "person:9",
+    type: "person",
+    id: "person:10",
     name: "Carlos Mendez",
     title: "Engineering Manager",
     currentRole: "role:eng-manager-ml",
-    companyId: "company:other-3",
-    skills: ["skill:python", "skill:kubernetes"],
-    relevanceScore: 0.47,
+    companyId: null,
+    companyName: "Kestrel Systems",
+    domain: "Platform Engineering",
+    category: "manager",
+    skills: ["Python", "Kubernetes"],
   },
   {
-    type: "person" as const,
-    id: "person:10",
+    type: "person",
+    id: "person:11",
     name: "Yuki Tanaka",
     title: "ML Engineer",
     currentRole: "role:ml-engineer",
-    companyId: "company:other-3",
-    skills: ["skill:pytorch", "skill:mlops"],
-    relevanceScore: 0.58,
+    companyId: null,
+    companyName: "Kestrel Systems",
+    domain: "Platform Engineering",
+    category: "ic",
+    skills: ["PyTorch", "MLOps"],
   },
 ];
-
-const roleSkillMap: Record<string, string[]> = {
-  "role:ml-engineer": ["skill:python", "skill:pytorch", "skill:deep-learning"],
-  "role:ml-infra-engineer": ["skill:kubernetes", "skill:distributed-systems", "skill:mlops"],
-  "role:data-scientist": ["skill:python", "skill:sql", "skill:deep-learning"],
-  "role:eng-manager-ml": ["skill:python", "skill:distributed-systems"],
-};
-
-const jobRequiredSkills = ["skill:python", "skill:pytorch", "skill:distributed-systems"];
 
 function buildEdges(): GraphEdge[] {
   const edges: GraphEdge[] = [];
@@ -162,30 +173,15 @@ function buildEdges(): GraphEdge[] {
   edges.push({ id: nextId("job-at"), source: job.id, target: company.id, kind: "AT" });
   edges.push({ id: nextId("job-is-a"), source: job.id, target: "role:ml-engineer", kind: "IS_A" });
 
-  for (const skillId of jobRequiredSkills) {
-    edges.push({ id: nextId("job-requires"), source: job.id, target: skillId, kind: "REQUIRES" });
-  }
-
   for (const role of roles) {
     edges.push({ id: nextId("company-has-role"), source: company.id, target: role.id, kind: "HAS_ROLE" });
-    for (const skillId of roleSkillMap[role.id] ?? []) {
-      edges.push({ id: nextId("role-requires"), source: role.id, target: skillId, kind: "REQUIRES" });
-    }
   }
 
   for (const person of people) {
     edges.push({ id: nextId("person-holds-role"), source: person.id, target: person.currentRole, kind: "HOLDS_ROLE" });
-    edges.push({ id: nextId("person-works-at"), source: person.id, target: person.companyId, kind: "WORKS_AT" });
-    for (const skillId of person.skills) {
-      edges.push({ id: nextId("person-has-skill"), source: person.id, target: skillId, kind: "HAS_SKILL" });
+    if (person.companyId === company.id) {
+      edges.push({ id: nextId("person-works-at"), source: person.id, target: company.id, kind: "WORKS_AT" });
     }
-    edges.push({
-      id: nextId("person-relevant-to"),
-      source: person.id,
-      target: job.id,
-      kind: "RELEVANT_TO",
-      weight: person.relevanceScore,
-    });
   }
 
   return edges;
@@ -194,9 +190,7 @@ function buildEdges(): GraphEdge[] {
 export const sampleCareerGraph: CareerGraphFixture = {
   job,
   company,
-  otherCompanies,
   roles,
-  skills,
   people,
   edges: buildEdges(),
 };
