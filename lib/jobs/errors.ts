@@ -3,7 +3,8 @@ export type JobIngestionErrorCode =
   | "URL_UNREACHABLE"
   | "URL_BLOCKED"
   | "TEXT_TOO_SHORT"
-  | "PARSE_FAILED";
+  | "PARSE_FAILED"
+  | "NO_SIGNAL_EXTRACTED";
 
 export class JobIngestionError extends Error {
   code: JobIngestionErrorCode;
