@@ -3,6 +3,7 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import type { JobInputMode, JobProfile } from "@/lib/jobs/types";
 import JobProfilePreview from "@/components/jobs/JobProfilePreview";
+import PersonDiscoveryPanel from "@/components/jobs/PersonDiscoveryPanel";
 
 interface IngestErrorResponse {
   error: { code: string; message: string };
@@ -101,7 +102,12 @@ export default function JobIntakeForm() {
         </div>
       )}
 
-      {jobProfile && <JobProfilePreview jobProfile={jobProfile} />}
+      {jobProfile && (
+        <>
+          <JobProfilePreview jobProfile={jobProfile} />
+          <PersonDiscoveryPanel jobProfile={jobProfile} />
+        </>
+      )}
     </div>
   );
 }
