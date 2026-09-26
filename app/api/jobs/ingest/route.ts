@@ -9,6 +9,7 @@ const STATUS_BY_CODE: Record<JobIngestionErrorCode, number> = {
   URL_UNREACHABLE: 502,
   URL_BLOCKED: 502,
   PARSE_FAILED: 422,
+  NO_SIGNAL_EXTRACTED: 422,
 };
 
 export async function POST(request: Request) {
