@@ -113,7 +113,9 @@ export default function JobIntakeForm() {
 }
 
 const containerStyle: CSSProperties = {
-  maxWidth: 560,
+  // Wider than the form itself needs, so the network graph (rendered below
+  // once people are discovered) has room to actually be legible.
+  maxWidth: 900,
   margin: "40px auto",
   padding: "0 20px",
   fontFamily: "Arial, Helvetica, sans-serif",
