@@ -10,7 +10,11 @@ import { AnthropicJobTextParser } from "@/lib/jobs/parse/AnthropicJobTextParser"
 export function getJobTextParser(): JobTextParser {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (apiKey) {
-    return new AnthropicJobTextParser(apiKey, process.env.ANTHROPIC_MODEL);
+    // `|| undefined`: an empty ANTHROPIC_MODEL="" in .env (e.g. copied from
+    // .env.example and left blank) must fall back to the default model, not
+    // get passed through as an empty string - JS default params only
+    // trigger on `undefined`, not `""`.
+    return new AnthropicJobTextParser(apiKey, process.env.ANTHROPIC_MODEL || undefined);
   }
   return new HeuristicJobTextParser();
 }
