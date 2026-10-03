@@ -1,12 +1,12 @@
 import type { CSSProperties } from "react";
-import type { GraphNode } from "@/lib/graph/types";
+import type { GraphNode, RoleNode } from "@/lib/graph/types";
 import type { PersonRelevanceScore } from "@/lib/scoring/types";
 import { getStrongestConnectionLabel } from "@/lib/scoring/scorePersonForJob";
-import { sampleCareerGraph } from "@/lib/fixtures/sampleCareerGraph";
 
 interface NodeDetailPanelProps {
   node: GraphNode | null;
   score: PersonRelevanceScore | null;
+  roles: RoleNode[];
   onClose: () => void;
 }
 
@@ -17,7 +17,7 @@ const TYPE_LABEL: Record<GraphNode["type"], string> = {
   person: "Person",
 };
 
-export default function NodeDetailPanel({ node, score, onClose }: NodeDetailPanelProps) {
+export default function NodeDetailPanel({ node, score, roles, onClose }: NodeDetailPanelProps) {
   if (!node) {
     return (
       <div style={panelStyle}>
@@ -36,7 +36,7 @@ export default function NodeDetailPanel({ node, score, onClose }: NodeDetailPane
       </button>
       <span style={badgeStyle}>{TYPE_LABEL[node.type]}</span>
       {node.type === "person" ? (
-        <PersonDetails node={node} score={score} />
+        <PersonDetails node={node} score={score} roles={roles} />
       ) : (
         <GenericDetails node={node} />
       )}
@@ -47,11 +47,13 @@ export default function NodeDetailPanel({ node, score, onClose }: NodeDetailPane
 function PersonDetails({
   node,
   score,
+  roles,
 }: {
   node: Extract<GraphNode, { type: "person" }>;
   score: PersonRelevanceScore | null;
+  roles: RoleNode[];
 }) {
-  const role = sampleCareerGraph.roles.find((r) => r.id === node.currentRole);
+  const role = roles.find((r) => r.id === node.currentRole);
 
   return (
     <div>
