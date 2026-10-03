@@ -16,5 +16,7 @@ export function getPersonDiscoveryProvider(): PersonDiscoveryProvider {
       "Person discovery requires ANTHROPIC_API_KEY to be set on the server.",
     );
   }
-  return new ClaudePersonDiscoveryProvider(apiKey, process.env.ANTHROPIC_MODEL);
+  // `|| undefined`: see getJobTextParser.ts - an empty ANTHROPIC_MODEL=""
+  // must fall back to the default model, not be passed through as "".
+  return new ClaudePersonDiscoveryProvider(apiKey, process.env.ANTHROPIC_MODEL || undefined);
 }

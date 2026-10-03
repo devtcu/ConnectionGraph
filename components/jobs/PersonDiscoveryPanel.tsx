@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import type { JobProfile } from "@/lib/jobs/types";
 import type { DiscoveredPerson } from "@/lib/people/types";
+import { buildGraphFromJob } from "@/lib/graph/buildGraphFromJob";
+import GraphViewLoader from "@/components/graph/GraphViewLoader";
 
 interface PersonDiscoveryPanelProps {
   jobProfile: JobProfile;
@@ -20,6 +22,11 @@ export default function PersonDiscoveryPanel({ jobProfile }: PersonDiscoveryPane
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ code: string; message: string } | null>(null);
   const [people, setPeople] = useState<DiscoveredPerson[] | null>(null);
+
+  // Only rebuilds when a fresh discovery run actually changes `people` -
+  // not on every render - since buildGraph+layout+scoring inside GraphView
+  // is real work we don't want to redo on unrelated state changes.
+  const fixture = useMemo(() => (people ? buildGraphFromJob(jobProfile, people) : null), [people, jobProfile]);
 
   async function handleFindPeople() {
     setLoading(true);
@@ -96,11 +103,29 @@ export default function PersonDiscoveryPanel({ jobProfile }: PersonDiscoveryPane
           ))}
         </div>
       )}
+
+      {fixture && (
+        <div style={{ marginTop: 20 }}>
+          <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
+            Network around this role — sized and colored by deterministic relevance, not the confidence above.
+          </div>
+          <div style={graphContainerStyle}>
+            <GraphViewLoader fixture={fixture} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 const containerStyle: CSSProperties = { marginTop: 20 };
+
+const graphContainerStyle: CSSProperties = {
+  height: 600,
+  border: "1px solid #e2e8f0",
+  borderRadius: 12,
+  overflow: "hidden",
+};
 
 const buttonStyle: CSSProperties = {
   padding: "10px 18px",
