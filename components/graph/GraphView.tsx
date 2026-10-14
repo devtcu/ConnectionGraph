@@ -103,7 +103,7 @@ export default function GraphView({ fixture }: GraphViewProps) {
   }, [fixture]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div className="graph-stage" style={{ position: "relative", width: "100%", height: "100%" }}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
       <NodeDetailPanel
         node={selectedNode}

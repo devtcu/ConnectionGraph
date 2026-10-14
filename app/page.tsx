@@ -3,7 +3,7 @@ import { sampleCareerGraph } from "@/lib/fixtures/sampleCareerGraph";
 
 export default function Home() {
   return (
-    <main style={{ width: "100vw", height: "100vh" }}>
+    <main style={{ height: "100%" }}>
       <GraphViewLoader fixture={sampleCareerGraph} />
     </main>
   );
